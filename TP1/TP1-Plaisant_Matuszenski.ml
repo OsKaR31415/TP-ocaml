@@ -37,7 +37,7 @@ let cat_sample : catalog=[
 let rec products_ids (catlg : catalog) : int list =
     match catlg with
     | [] -> []
-    | product :: catlg_tail -> product.id :: products_ids catlg_tail;;
+    | prod :: catlg_tail -> prod.id :: products_ids catlg_tail;;
 
 (* tests *)
 (products_ids(cat_sample)) == [34; 49; 47; 18; 24; 33; 190; 4; 9; 78; 99; 101];;
@@ -53,7 +53,69 @@ let rec cheaper_than (catlg: catalog) (price: euro) : catalog =
     then fst_product :: (cheaper_than catlg_tail price)
     else (cheaper_than catlg_tail price);;
 
+(* test *)
 (cheaper_than cat_sample 20.);;
 
+(* ┏━╸╻ ╻┏━╸┏━┓┏━╸╻┏━╸┏━╸   ╺┓  ┏━┓ *)
+(* ┣╸ ┏╋┛┣╸ ┣┳┛┃  ┃┃  ┣╸     ┃  ╺━┫ *)
+(* ┗━╸╹ ╹┗━╸╹┗╸┗━╸╹┗━╸┗━╸   ╺┻╸╹┗━┛ *)
+
+let rec sum_price (catlg: catalog): float =
+    match catlg with
+    | [] -> 0.
+    | head :: catlg_tail -> head.price +. sum_price(catlg_tail);;
+
+let mean_price(catlg : catalog) : float = (sum_price catlg) /. float_of_int(List.length catlg);;
+
+(* tests *)
+mean_price (cheaper_than cat_sample 20.);;
+
+
+(* ┏━╸╻ ╻┏━╸┏━┓┏━╸╻┏━╸┏━╸   ╺┓  ╻ ╻ *)
+(* ┣╸ ┏╋┛┣╸ ┣┳┛┃  ┃┃  ┣╸     ┃  ┗━┫ *)
+(* ┗━╸╹ ╹┗━╸╹┗╸┗━╸╹┗━╸┗━╸   ╺┻╸╹  ╹ *)
+
+let rec most_expensive (catlg: catalog) : product =
+    match catlg with
+    | [prod] -> prod
+    | first :: second :: catlg -> if first.price >= second.price
+    then most_expensive(first :: catlg)
+    else most_expensive(second :: catlg);;
+
+(* test *)
+
+most_expensive cat_sample;;
+
+
+
+(* ┏━╸╻ ╻┏━╸┏━┓┏━╸╻┏━╸┏━╸   ┏━┓ ╺┓  *)
+(* ┣╸ ┏╋┛┣╸ ┣┳┛┃  ┃┃  ┣╸    ┏━┛  ┃  *)
+(* ┗━╸╹ ╹┗━╸╹┗╸┗━╸╹┗━╸┗━╸   ┗━╸╹╺┻╸ *)
+
+let rec has_category (catgry: category) (list_catgry: category list) : bool =
+    match list_catgry with
+    | [] -> false
+    | [c] -> c == catgry
+    | head :: tail -> if head == catgry then true
+    else has_category catgry tail;;
+
+(* tests *)
+assert      (has_category Book [Book;   Game]);;
+assert (not (has_category Book [Health; Game]));;
+
+
+
+(* ┏━╸╻ ╻┏━╸┏━┓┏━╸╻┏━╸┏━╸   ┏━┓ ┏━┓ *)
+(* ┣╸ ┏╋┛┣╸ ┣┳┛┃  ┃┃  ┣╸    ┏━┛ ┏━┛ *)
+(* ┗━╸╹ ╹┗━╸╹┗╸┗━╸╹┗━╸┗━╸   ┗━╸╹┗━╸ *)
+
+
+
+let rec in_category (prod : product) (catgry : category) =
+    has_category catgry prod.categories;;
+
+(* tests *)
+assert (not(in_category {id=49; name="book B"; price=18.6; categories=[Book; Health]} Game));;
+assert (in_category {id=49; name="book B"; price=18.6; categories=[Book; Health]} Book);;
 
 

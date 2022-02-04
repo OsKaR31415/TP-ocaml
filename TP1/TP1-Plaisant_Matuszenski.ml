@@ -114,7 +114,7 @@ assert (not (has_category Book [Health; Game]));;
 let rec in_category (prod : product) (catgry : category) =
     has_category catgry prod.categories;;
 
-(* tests *)
+tests
 assert (not(in_category {id=49; name="book B"; price=18.6; categories=[Book; Health]} Game));;
 assert (in_category {id=49; name="book B"; price=18.6; categories=[Book; Health]} Book);;
 

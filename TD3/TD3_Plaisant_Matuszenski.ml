@@ -20,10 +20,14 @@ let rec sort_contacts (l : contact list) : contact list =
 (* ⣏⡉ ⢇⡸ ⣏⡉ ⣏⡱ ⡎⠑ ⡇ ⡎⠑ ⣏⡉   ⢺    ⢺  *)
 (* ⠧⠤ ⠇⠸ ⠧⠤ ⠇⠱ ⠣⠔ ⠇ ⠣⠔ ⠧⠤   ⠼⠄ ⠶ ⠼⠄ *)
 
-let rec select_min (contlist : contact list) : (contact*(contact list)=
-     match contlist with
-     | [] -> (None,[])
-     | hd :: tl -> if hd' <= hd -> hd then hd :: l;; 
+let rec select_min (contlist : contact list) : (contact*(contact list))=
+    let rec min (current_min : contact) (contlist : contact list) : (contact * (contact list)) =
+        match contlist with
+        | [] -> (current_min, contlist)
+        | _ -> select_min ((if current_min < contlist.hd then current_min else contlist.hd); contlist.tl)
+    in (min (contlist.hd, contlist), contlist);;
+
+
 
 
 

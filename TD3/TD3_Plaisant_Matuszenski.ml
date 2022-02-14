@@ -137,7 +137,21 @@ let rec gen_contacts (n : int) : string list =
 *)
 
 
-(* Note: We can thank stackOverflow for the timing function ;) *)
+(* Note: I saw you copy-pasting the time function from stackoverflow. Don't try to deny it.
+           \\
+            \\
+   ==\       \\
+      =\=     \\
+        =\=    \\
+           \==  \\
+    ¯¯¯       \==
+       ¯¯¯¯¯
+   _______  ¯¯¯¯
+          ____
+| ____________ |
+|              |
+¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+ *)
 
 (* Function that measures the execution time of a given function *func* called
     with the argument *arg*. *)
@@ -161,6 +175,9 @@ time gen_contacts 1000;;  (* 12860μs = 12.86ms *)
 time gen_contacts 5000;;  (* 61310μs = 61.31ms *)
 time gen_contacts 10000;; (* 120ms *)
 
+(* Il semble que la complexité en temps soit de O(n), car le temps mesuré sur
+   les appels semble proportionnel au nombre de valeurs demandées. *)
+
 
 (* ⣏⡉ ⢇⡸ ⣏⡉ ⣏⡱ ⡎⠑ ⡇ ⡎⠑ ⣏⡉   ⢉⡹   ⢉⡹ *)
 (* ⠧⠤ ⠇⠸ ⠧⠤ ⠇⠱ ⠣⠔ ⠇ ⠣⠔ ⠧⠤   ⠤⠜ ⠶ ⠤⠜ *)
@@ -177,6 +194,15 @@ let rec sorted_contacts (contlist: contact list) : bool =
     );;
 
 
+(* ⣏⡉ ⢇⡸ ⣏⡉ ⣏⡱ ⡎⠑ ⡇ ⡎⠑ ⣏⡉   ⢉⡹   ⢉⡹ *)
+(* ⠧⠤ ⠇⠸ ⠧⠤ ⠇⠱ ⠣⠔ ⠇ ⠣⠔ ⠧⠤   ⠤⠜ ⠶ ⠤⠜ *)
 
+(* Appeler la fonction *sorted_contacts* sur le résultat de l'appel à une
+   fonction de tri pour 100 listes de contacts générées de manière aléatoire
+   permettrai de verrifier que la fonction de trie permet effectivement de
+   trier la liste de contact q'on lui donne, et qu'elle ne laisse pas certains
+   éléments dans le désordre. Cela peut permettre de constituer un test de la
+   fonction de tri, même si cela ne constitue pas une preuve du fonctionnement
+   de l'algorithme de tri. *)
 
 

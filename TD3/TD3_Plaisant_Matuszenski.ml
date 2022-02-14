@@ -96,8 +96,87 @@ let rec qsort_contacts (l : contact list) : contact list =
    partitionne la liste de contacts en suivant un pivot (qui est le premier
    élément de la liste), trie chaque partition récursivement, puis les joint.
    Dans le pire des cas, Si la liste est déjà triée (ou bien triée en ordre inverse), il faudra que qsort_contacts fasse partitionner n fois la liste par partition_contacts, qui à une complexité en O(n). Donc, la comlexité dans le pire des cas est O(n^2) car un algorithme de complexité O(n^2) est exécuté n fois.
-   Dans un cas moyen (ce qui nous intéresse le plus), la partition sera faîte, en moyenne sur la moitié de la liste. On aura donc O(log n) partitions à faire. Chaque partition a une complexité de O(n), on a donc une complexité de O(n log n) dans le cas moyen.
-   Dans le meilleur des cas, le pivot permet toujours de partitionner la liste de contacts en deux parties de même longueur, ce qui fait que le nombre de divisions nécessaires pour arriver au cas de base de la récursion est O(log(n)). La complexité dans ce cas est donc O(n log(n))
+   Dans un cas moyen (ce qui nous intéresse le plus), la partition sera faîte, en moyenne sur la moitié de la liste. On aura donc log_2(n) partitions à faire. Chaque partition a une complexité de O(n), on a donc une complexité de O(n log n) dans le cas moyen.
+   Dans le meilleur des cas, la complexité est de O(n), car c'est ce qui est marqué sur wikipédia (et il faut toujours croire ce qui est dit sur internet).
  *)
+
+
+(* ┏━┓         ┏┳┓┏━╸┏━┓╻ ╻┏━┓┏━╸   ╺┳┓╻ ╻   ╺┳╸┏━╸┏┳┓┏━┓┏━┓   ╺┳┓╻┏━╸╻ ╻┏━╸┏━╸╻ ╻╺┳╸╻┏━┓┏┓╻ *)
+(* ╺━┫   ╺━╸   ┃┃┃┣╸ ┗━┓┃ ┃┣┳┛┣╸     ┃┃┃ ┃    ┃ ┣╸ ┃┃┃┣━┛┗━┓    ┃┃ ┣╸ ┏╋┛┣╸ ┃  ┃ ┃ ┃ ┃┃ ┃┃┗┫ *)
+(* ┗━┛         ╹ ╹┗━╸┗━┛┗━┛╹┗╸┗━╸   ╺┻┛┗━┛    ╹ ┗━╸╹ ╹╹  ┗━┛   ╺┻┛ ┗━╸╹ ╹┗━╸┗━╸┗━┛ ╹ ╹┗━┛╹ ╹ *)
+
+
+
+let gen_contact max_len =
+    let gen_char () =
+        let i = Random.int 26 + 97 in
+        char_of_int i
+        in
+        let rec aux acc x =
+            if x = 0 then (String.of_seq (List.to_seq acc))
+            else aux (gen_char () :: acc) (x - 1)
+    in aux [] max_len;;
+
+
+let rec gen_contacts (n : int) : string list =
+    if n <= 0 then []
+    else gen_contact (Random.int 10) :: gen_contacts (n - 1);;
+
+
+(* ⣏⡉ ⢇⡸ ⣏⡉ ⣏⡱ ⡎⠑ ⡇ ⡎⠑ ⣏⡉   ⢉⡹   ⢺  *)
+(* ⠧⠤ ⠇⠸ ⠧⠤ ⠇⠱ ⠣⠔ ⠇ ⠣⠔ ⠧⠤   ⠤⠜ ⠶ ⠼⠄ *)
+
+(* La fonction *gen_contacts* n'est pas une fonction au sens mathématique du
+   terme car le résultat qu'elle donne n'est pas uniquement fonction des
+   paramètres donnés en entrée, c'est-à-dire que la fonction n'est pas
+   totalement déterministe. En effet, l'introduction d'aléatoire dans le
+   programme fait que l'appel plusieurs fois de gen_contacts avec les mêmes
+   arguments ne donnera pas forcément le même résultat.
+   Ceci dit, une variable aléatoire est définie formellement comme une fonction
+   (source : https://fr.wikipedia.org/wiki/Variable_al%C3%A9atoire#D%C3%A9finitions)
+*)
+
+
+(* Note: We can thank stackOverflow for the timing function ;) *)
+
+(* Function that measures the execution time of a given function *func* called
+    with the argument *arg*. *)
+let time func arg =
+    let begin_time = Sys.time() in
+    let foo = func arg in (* just here to execute the function *)
+    Printf.printf "Execution took: %f seconds\n" (10. *. (Sys.time() -. begin_time));;
+
+(* Function that measures the execution time of a given function *func* called
+   with the argument *arg* and that returns the result of the execution. *)
+let time_and_return func arg =
+    let begin_time = Sys.time() in
+    let result = func arg in
+    Printf.printf "Execution took: %f seconds\n" (10. *. (Sys.time() -. begin_time));
+    result;;
+
+(* Measure the execution time of *gen_contacts*. *)
+time gen_contacts 10;;  (* 140μs *)
+time gen_contacts 100;;  (* 1400μs *)
+time gen_contacts 1000;;  (* 12860μs = 12.86ms *)
+time gen_contacts 5000;;  (* 61310μs = 61.31ms *)
+time gen_contacts 10000;; (* 120ms *)
+
+
+(* ⣏⡉ ⢇⡸ ⣏⡉ ⣏⡱ ⡎⠑ ⡇ ⡎⠑ ⣏⡉   ⢉⡹   ⢉⡹ *)
+(* ⠧⠤ ⠇⠸ ⠧⠤ ⠇⠱ ⠣⠔ ⠇ ⠣⠔ ⠧⠤   ⠤⠜ ⠶ ⠤⠜ *)
+
+(* Check if a contact list is sorted - O(n) *)
+let rec sorted_contacts (contlist: contact list) : bool =
+    match contlist with
+    | [] -> true
+    | first::[] -> true
+    | first :: second :: rest -> (
+        if first < second
+        then (sorted_contacts (second :: rest))
+        else false
+    );;
+
+
+
 
 

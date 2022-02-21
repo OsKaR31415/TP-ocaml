@@ -138,19 +138,14 @@ let rec gen_contacts (n : int) : string list =
 
 
 (* Note: I saw you copy-pasting the time function from stackoverflow. Don't try to deny it.
-           \\
-            \\
-   ==\       \\
-      =\=     \\
-        =\=    \\
-           \==  \\
-    ¯¯¯       \==
-       ¯¯¯¯¯
-   _______  ¯¯¯¯
-          ____
-| ____________ |
-|              |
-¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
+       .   \
+        `-, \
+     `'-,.
+     ----
+   | ---- |
+   |______|
+
  *)
 
 (* Function that measures the execution time of a given function *func* called
